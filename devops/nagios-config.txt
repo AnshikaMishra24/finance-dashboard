@@ -1,0 +1,206 @@
+###############################################################################
+# NAGIOS CONFIGURATION FOR FINANCE DASHBOARD
+# This is a demo configuration showing monitoring setup
+###############################################################################
+
+# Define Host
+###############################################################################
+define host {
+    use                     linux-server
+    host_name               finance-dashboard-server
+    alias                   Finance Dashboard Web Server
+    address                 192.168.1.100
+    max_check_attempts      5
+    check_period           24x7
+    notification_interval   30
+    notification_period     24x7
+    contact_groups          admins
+}
+
+# Define Host Group
+###############################################################################
+define hostgroup {
+    hostgroup_name  finance-servers
+    alias           Finance Dashboard Servers
+    members         finance-dashboard-server
+}
+
+# Service: HTTP Check
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     HTTP Service
+    check_command           check_http
+    max_check_attempts      4
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+    notification_interval   30
+}
+
+# Service: HTTPS Check
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     HTTPS Service
+    check_command           check_https
+    max_check_attempts      4
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+    notification_interval   30
+}
+
+# Service: Dashboard Page Load Time
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     Dashboard Load Time
+    check_command           check_http_response_time!dashboard.html!3
+    max_check_attempts      3
+    normal_check_interval   10
+    retry_check_interval    2
+    contact_groups          admins
+}
+
+# Service: CPU Usage
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     CPU Usage
+    check_command           check_nrpe!check_cpu!80!90
+    max_check_attempts      4
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+}
+
+# Service: Memory Usage
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     Memory Usage
+    check_command           check_nrpe!check_mem!80!90
+    max_check_attempts      4
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+}
+
+# Service: Disk Usage
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     Disk Usage
+    check_command           check_nrpe!check_disk!80!90!/
+    max_check_attempts      4
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+}
+
+# Service: Nginx Process
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     Nginx Process
+    check_command           check_nrpe!check_procs!1:!10!nginx
+    max_check_attempts      4
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+}
+
+# Service: Website Content Check
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     Dashboard Content Check
+    check_command           check_http_content!"Finance Dashboard"
+    max_check_attempts      3
+    normal_check_interval   10
+    retry_check_interval    2
+    contact_groups          admins
+}
+
+# Service: SSL Certificate Expiration
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     SSL Certificate Expiry
+    check_command           check_ssl_cert!30!15
+    max_check_attempts      2
+    normal_check_interval   720
+    retry_check_interval    60
+    contact_groups          admins
+}
+
+# Service: API Response Time (if applicable)
+###############################################################################
+define service {
+    use                     generic-service
+    host_name               finance-dashboard-server
+    service_description     API Response Time
+    check_command           check_http_response_time!/api/transactions!2
+    max_check_attempts      3
+    normal_check_interval   5
+    retry_check_interval    1
+    contact_groups          admins
+}
+
+# Define Commands
+###############################################################################
+define command {
+    command_name    check_http_response_time
+    command_line    $USER1$/check_http -H $HOSTADDRESS$ -u $ARG1$ -w $ARG2$ -c $ARG3$
+}
+
+define command {
+    command_name    check_http_content
+    command_line    $USER1$/check_http -H $HOSTADDRESS$ -s $ARG1$
+}
+
+define command {
+    command_name    check_ssl_cert
+    command_line    $USER1$/check_ssl_cert -H $HOSTADDRESS$ -w $ARG1$ -c $ARG2$
+}
+
+define command {
+    command_name    check_nrpe
+    command_line    $USER1$/check_nrpe -H $HOSTADDRESS$ -c $ARG1$ -a $ARG2$ $ARG3$ $ARG4$
+}
+
+# Contact Groups
+###############################################################################
+define contactgroup {
+    contactgroup_name   admins
+    alias               System Administrators
+    members             admin
+}
+
+# Contact Definition
+###############################################################################
+define contact {
+    contact_name                    admin
+    alias                           System Admin
+    service_notification_period     24x7
+    host_notification_period        24x7
+    service_notification_options    w,u,c,r
+    host_notification_options       d,u,r
+    service_notification_commands   notify-service-by-email
+    host_notification_commands      notify-host-by-email
+    email                           admin@financedashboard.com
+}
+
+###############################################################################
+# END OF NAGIOS CONFIGURATION
+###############################################################################
