@@ -1,0 +1,123 @@
+---
+# Ansible Playbook for Finance Dashboard Deployment
+# This is a demo playbook showing DevOps automation
+
+- name: Deploy Finance Dashboard Frontend
+  hosts: webservers
+  become: yes
+  vars:
+    app_name: finance-dashboard
+    app_directory: /var/www/{{ app_name }}
+    web_user: www-data
+    web_group: www-data
+
+  tasks:
+    # Task 1: Update system packages
+    - name: Update apt package cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_os_family == "Debian"
+
+    # Task 2: Install required packages
+    - name: Install nginx web server
+      apt:
+        name: nginx
+        state: present
+      when: ansible_os_family == "Debian"
+
+    - name: Install git
+      apt:
+        name: git
+        state: present
+      when: ansible_os_family == "Debian"
+
+    # Task 3: Create application directory
+    - name: Create application directory
+      file:
+        path: "{{ app_directory }}"
+        state: directory
+        owner: "{{ web_user }}"
+        group: "{{ web_group }}"
+        mode: '0755'
+
+    # Task 4: Copy frontend files
+    - name: Copy HTML files
+      copy:
+        src: ../
+        dest: "{{ app_directory }}"
+        owner: "{{ web_user }}"
+        group: "{{ web_group }}"
+        mode: '0644'
+      notify: Restart nginx
+
+    # Task 5: Configure nginx
+    - name: Configure nginx virtual host
+      template:
+        src: templates/nginx-site.conf.j2
+        dest: /etc/nginx/sites-available/{{ app_name }}
+        mode: '0644'
+      notify: Restart nginx
+
+    - name: Enable nginx site
+      file:
+        src: /etc/nginx/sites-available/{{ app_name }}
+        dest: /etc/nginx/sites-enabled/{{ app_name }}
+        state: link
+      notify: Restart nginx
+
+    # Task 6: Set proper permissions
+    - name: Set correct permissions for web files
+      file:
+        path: "{{ app_directory }}"
+        owner: "{{ web_user }}"
+        group: "{{ web_group }}"
+        recurse: yes
+
+    # Task 7: Validate nginx configuration
+    - name: Test nginx configuration
+      command: nginx -t
+      register: nginx_test
+      changed_when: false
+
+    - name: Display nginx test result
+      debug:
+        msg: "{{ nginx_test.stderr }}"
+
+  # Handlers for service management
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+        enabled: yes
+
+    - name: Reload nginx
+      service:
+        name: nginx
+        state: reloaded
+
+# Post-deployment tasks
+- name: Post-deployment verification
+  hosts: webservers
+  tasks:
+    - name: Check if nginx is running
+      service:
+        name: nginx
+        state: started
+      register: nginx_status
+
+    - name: Display deployment status
+      debug:
+        msg: "Finance Dashboard deployed successfully!"
+
+    - name: Test web server response
+      uri:
+        url: "http://localhost"
+        status_code: 200
+      register: web_test
+      ignore_errors: yes
+
+    - name: Display web test result
+      debug:
+        msg: "Web server is {{ 'responding' if web_test.status == 200 else 'not responding' }}"
