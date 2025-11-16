@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Finance Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 50 50" fill="none">
+                    <circle cx="25" cy="25" r="23" stroke="#00BCD4" stroke-width="4"/>
+                    <path d="M25 10 L25 30 M15 25 L35 25" stroke="#00BCD4" stroke-width="4" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h2>FinancePro</h2>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">📊</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="transactions.html" class="nav-item">
+                <span class="nav-icon">💳</span>
+                <span class="nav-text">Transactions</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Profile</span>
+            </a>
+            <a href="settings.html" class="nav-item active">
+                <span class="nav-icon">⚙️</span>
+                <span class="nav-text">Settings</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <a href="index.html" class="nav-item">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-text">Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="navbar-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+                <h1 class="page-title">Settings</h1>
+            </div>
+            
+            <div class="navbar-right">
+                <button class="notification-btn">🔔<span class="badge">3</span></button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=00BCD4&color=fff" alt="User">
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Settings Content -->
+        <div class="dashboard-content">
+            <div class="settings-container">
+                <!-- General Settings -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>General Settings</h3>
+                    </div>
+                    <div class="settings-section">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Language</h4>
+                                <p>Select your preferred language</p>
+                            </div>
+                            <select class="setting-control">
+                                <option>English</option>
+                                <option>Spanish</option>
+                                <option>French</option>
+                                <option>German</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Currency</h4>
+                                <p>Choose your default currency</p>
+                            </div>
+                            <select class="setting-control">
+                                <option>USD ($)</option>
+                                <option>EUR (€)</option>
+                                <option>GBP (£)</option>
+                                <option>JPY (¥)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Time Zone</h4>
+                                <p>Set your time zone</p>
+                            </div>
+                            <select class="setting-control">
+                                <option>UTC-5 (Eastern Time)</option>
+                                <option>UTC-6 (Central Time)</option>
+                                <option>UTC-7 (Mountain Time)</option>
+                                <option>UTC-8 (Pacific Time)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Appearance -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Appearance</h3>
+                    </div>
+                    <div class="settings-section">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Theme</h4>
+                                <p>Customize the dashboard appearance</p>
+                            </div>
+                            <select class="setting-control" onchange="changeTheme(this.value)">
+                                <option value="light" selected>Light</option>
+                                <option value="dark">Dark</option>
+                                <option value="auto">Auto</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Compact Mode</h4>
+                                <p>Reduce spacing for more content</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Notifications</h3>
+                    </div>
+                    <div class="settings-section">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Email Notifications</h4>
+                                <p>Receive updates via email</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Transaction Alerts</h4>
+                                <p>Get notified for new transactions</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Budget Warnings</h4>
+                                <p>Alert when approaching budget limits</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Monthly Reports</h4>
+                                <p>Receive monthly financial summaries</p>
+                            </div>
+                            <label class="toggle-switch">
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Security</h3>
+                    </div>
+                    <div class="settings-section">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Two-Factor Authentication</h4>
+                                <p>Add an extra layer of security</p>
+                            </div>
+                            <button class="btn btn-secondary">Enable 2FA</button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Change Password</h4>
+                                <p>Update your account password</p>
+                            </div>
+                            <button class="btn btn-secondary" onclick="changePassword()">Change</button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Login Activity</h4>
+                                <p>View recent login history</p>
+                            </div>
+                            <button class="btn btn-secondary">View Activity</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data & Privacy -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Data & Privacy</h3>
+                    </div>
+                    <div class="settings-section">
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Export Data</h4>
+                                <p>Download all your financial data</p>
+                            </div>
+                            <button class="btn btn-secondary">Download</button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <div class="setting-info">
+                                <h4>Delete Account</h4>
+                                <p>Permanently delete your account</p>
+                            </div>
+                            <button class="btn btn-danger">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Save Button -->
+                <div class="settings-actions">
+                    <button class="btn btn-primary" onclick="saveSettings()">Save All Changes</button>
+                    <button class="btn btn-secondary" onclick="resetSettings()">Reset to Default</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>
